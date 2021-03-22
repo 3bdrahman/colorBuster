@@ -1,5 +1,6 @@
 package com.ayosef.colorbuster.ui.main
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -27,14 +28,14 @@ private lateinit var definitionTextView: TextView
         recycler=view.findViewById(R.id.recyclerView)
         recycler.layoutManager=LinearLayoutManager(context)
         definitionTextView = view.findViewById(R.id.defintion_textView)
-        definitionTextView.setText("")
+       definitionTextView.text=""
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel.vocabulary.observe(viewLifecycleOwner,{recycler.adapter=BusterAdapter(it)})
     }
     private inner class BusterViewHolder(view: View):RecyclerView.ViewHolder(view), View.OnClickListener{
         private lateinit var phrase: phrase
@@ -43,8 +44,27 @@ private lateinit var definitionTextView: TextView
             itemView.setOnClickListener(this)
         }
         override fun onClick(v: View?) {
-            definitionTextView.text = phrase.term
+            definitionTextView.text = "ColorItem(colorId= " + phrase.colorId.toString() + " ,hexString= " + phrase.hexString + " ,name= "+phrase.name + ")"
         }
+        fun bind(phrase: phrase){
+            this.phrase=phrase
+            wordTextView.text=phrase.name
+            definitionTextView.text = "ColorItem(colorId= " + phrase.colorId.toString() + " ,hexString= " + phrase.hexString + " ,name= "+phrase.name+")"
+            itemView.setBackgroundColor(Color.parseColor(phrase.hexString))
+        }
+
+    }
+    private inner class BusterAdapter(private val list: List<phrase>):RecyclerView.Adapter<BusterViewHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusterViewHolder {
+            val view=layoutInflater.inflate(R.layout.recycler_item,parent,false)
+            return BusterViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: BusterViewHolder, position: Int) {
+            holder.bind(list[position])
+        }
+
+        override fun getItemCount() = list.size
 
     }
 

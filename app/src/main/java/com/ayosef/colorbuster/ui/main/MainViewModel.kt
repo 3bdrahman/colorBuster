@@ -7,8 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 
-data class phrase(val definition:String, var term: String)
+data class phrase(val colorId:Int, val hexString: String, val rgb: JsonObject, val name:String)
 class vocabulary: ArrayList<phrase>()
 class WordList(jsonString: String){
     var terms = ArrayList<phrase>()
